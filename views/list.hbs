@@ -1,0 +1,13 @@
+<h1>Courses</h1>
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+    </tr>
+    {{#each userDocuments}}
+    <tr>
+        <tr>{{this.courseId}}</tr>
+        <tr>{{this.courseName}}</tr>
+    </tr>
+    {{/each}}
+</table>
