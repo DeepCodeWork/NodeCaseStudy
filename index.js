@@ -1,32 +1,30 @@
-const connection = require("./model");
 const express = require("express");
-const application = express();
-const path = require("path");
-const expressHandlebars =require("express-handlebars");
-const bodyparser = require("body-parser");
-const CourseController = require("./controllers/courses");
+const app = express();
+const dbConnect = require('./config/db.config')
+const UserRoutes = require('./routes/UserRoutes');
+const GridfsRoutes = require('./routes/GridFsRoutes');
+const { initGirdfs } = require("./model/user.model");
+require('dotenv').config();
 
-application.use(bodyparser.urlencoded({
-    extended: true
-}));
+//View Engine
+app.set('view engine', 'ejs');
 
-application.set("views",path.join(__dirname,"/views/"));
+app.get('/', (req, res) => {
+    res.render('index'); 
+})
 
-application.engine("hbs",expressHandlebars({
-    extname: "hbs",
-    defaultLayout: "mainlayout",
-    layoutsDir: __dirname + "/views/layouts"
-}));
+//Middleware
+app.use(express.json());
 
-application.set("view engine", "hbs");
+//Connecting db
+dbConnect();
 
-application.get("/",(req,res)=>{
-    // res.send("<h1>Hello</h1>");
-    res.render("index",{});
-});
+//Routes
+app.use('/api', UserRoutes)
+app.use('/api', GridfsRoutes)
 
-application.use("/course", CourseController);
 
-application.listen("3000",()=>{
-    console.log("Server started");
+//Starting the server
+app.listen( process.env.PORT,()=>{
+    console.log(`Server is running on ${process.env.PORT}`);
 })
